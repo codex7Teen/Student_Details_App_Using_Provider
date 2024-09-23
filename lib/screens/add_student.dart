@@ -1,13 +1,14 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, use_build_context_synchronously
 
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:student_details_getx/db/student_db.dart';
+import 'package:provider/provider.dart';
 import 'package:student_details_getx/model/student_model.dart';
+import 'package:student_details_getx/provider/student_provider.dart';
+import 'package:student_details_getx/widgets/student_list_widget.dart';
 
 class ScreenAddStudent extends StatefulWidget {
   final String heading;
@@ -94,7 +95,7 @@ class _ScreenAddStudentState extends State<ScreenAddStudent> {
               child: Column(
                 children: [
                   CircleAvatar(
-                    backgroundColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
                       radius: 50,
                       backgroundImage: imageFile != null
                           ? FileImage(imageFile!)
@@ -196,7 +197,11 @@ class _ScreenAddStudentState extends State<ScreenAddStudent> {
                           decoration: BoxDecoration(
                               color: Colors.red[100],
                               borderRadius: BorderRadius.circular(20)),
-                          child: Center(child: Text('Clear Data', style: TextStyle(color: Colors.black),)),
+                          child: Center(
+                              child: Text(
+                            'Clear Data',
+                            style: TextStyle(color: Colors.black),
+                          )),
                         ),
                       ),
                       SizedBox(
@@ -221,17 +226,19 @@ class _ScreenAddStudentState extends State<ScreenAddStudent> {
 
                               if (widget.addOrUpdate == 'Add Student') {
                                 // Add Student
-                                await StudentDbFunctions.addStudentDetails(data);      
+                                await context.read<StudentProvider>().addStudentDetails(data);
                               } else {
-                                await StudentDbFunctions.updateStudent(widget.studentId!, data);
+                                await context.read<StudentProvider>().updateStudent(widget.studentId!, data);
                               }
 
-                              Get.back();
-                                  Get.showSnackbar(GetSnackBar(
-                                    duration: Duration(seconds: 1),
-                                    title: 'Save data success',
-                                    message: '_',
-                                  ));
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  'Data Save Success',
+                                ),
+                                duration: Duration(seconds: 2)
+                              ));
                             }
 
                             _userNameController.clear();
@@ -248,7 +255,9 @@ class _ScreenAddStudentState extends State<ScreenAddStudent> {
                           decoration: BoxDecoration(
                               color: Colors.green[100],
                               borderRadius: BorderRadius.circular(20)),
-                          child: Center(child: Text(widget.addOrUpdate, style: TextStyle(color: Colors.black))),
+                          child: Center(
+                              child: Text(widget.addOrUpdate,
+                                  style: TextStyle(color: Colors.black))),
                         ),
                       )
                     ],

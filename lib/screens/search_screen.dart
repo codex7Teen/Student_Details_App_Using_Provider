@@ -2,8 +2,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:student_details_getx/db/student_db.dart';
+import 'package:provider/provider.dart';
+import 'package:student_details_getx/provider/student_provider.dart';
 import 'package:student_details_getx/model/student_model.dart';
 import 'package:student_details_getx/screens/view_student.dart';
 import 'package:student_details_getx/widgets/student_list_widget.dart';
@@ -20,8 +20,9 @@ class _ScreenSearchState extends State<ScreenSearch> {
   List<StudentModel> searchResults = [];
   bool hasSearched = false;
 
-  void filteredStudets(String query) {
-    final results = studentListNotifier.value.where((student) {
+  void filterStudets(String query) {
+    final studentProvider = context.read<StudentProvider>();
+    final results = studentProvider.studentList.where((student) {
       return student.name.toLowerCase().contains(query.toLowerCase());
     }).toList();
 
@@ -60,7 +61,7 @@ class _ScreenSearchState extends State<ScreenSearch> {
                 backgroundColor: Colors.white,
                 padding: EdgeInsets.all(10),
                 onChanged: (query) {
-                  filteredStudets(query);
+                  filterStudets(query);
                 },
               ),
             ),
@@ -72,12 +73,12 @@ class _ScreenSearchState extends State<ScreenSearch> {
                             //data
                             final data = searchResults[index];
                             return InkWell(
-                                onTap: () => Get.to(ScreenViewStudent(
+                                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScreenViewStudent(
                                   imagePath: data.image,
                                     name: data.name,
                                     age: data.age,
                                     classs: data.classs,
-                                    gender: data.gender)),
+                                    gender: data.gender))),
                                 child: StudentListWidget(
                                   name: data.name,
                                   gender: data.gender,

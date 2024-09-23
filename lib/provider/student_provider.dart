@@ -4,56 +4,59 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:student_details_getx/model/student_model.dart';
 
-ValueNotifier<List<StudentModel>> studentListNotifier = ValueNotifier([]);
+class StudentProvider extends ChangeNotifier {
 
-class StudentDbFunctions extends ChangeNotifier {
+  // List to store students
+  List<StudentModel> _studentList = [];
+
+  List<StudentModel> get studentList => _studentList;
 
   //! Add Student
- static Future<void> addStudentDetails(StudentModel value) async {
+  Future<void> addStudentDetails(StudentModel value) async {
   final studentDb = await Hive.openBox<StudentModel>(StudentModel.boxName);
 
   await studentDb.add(value);
 
-  studentListNotifier.value.add(value);
+  _studentList.add(value);
 
-  studentListNotifier.notifyListeners();
+  notifyListeners();
 
   log('add success');
 }
 
 //! Get Student
- static Future<void> getStudentDetails() async {
+  Future<void> getStudentDetails() async {
   final studentDb = await Hive.openBox<StudentModel>(StudentModel.boxName);
 
-  studentListNotifier.value.clear();
+  _studentList = studentDb.values.toList();
 
-  studentListNotifier.value.addAll(studentDb.values);
-
-  studentListNotifier.notifyListeners();
+  notifyListeners();
 
   log('get success');
 }
 
 //! Delete Student
- static Future<void> deleteStudent(int id) async {
+  Future<void> deleteStudent(int id) async {
   final studentDb = await Hive.openBox<StudentModel>(StudentModel.boxName);
 
   await studentDb.delete(id);
   await getStudentDetails();
+  notifyListeners();
 
   log('delete success');
 }
 
 //! Update Student
- static Future<void> updateStudent(int id, StudentModel newValue) async {
+  Future<void> updateStudent(int id, StudentModel newValue) async {
   final studentDb = await Hive.openBox<StudentModel>(StudentModel.boxName);
 
   await studentDb.put(id, newValue);
 
   await getStudentDetails();
+  
+  notifyListeners();
 
   log('update success');
 }
-
   
 }

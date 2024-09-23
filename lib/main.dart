@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:student_details_getx/model/student_model.dart';
+import 'package:student_details_getx/provider/student_provider.dart';
+import 'package:student_details_getx/provider/theme_provider.dart';
 import 'package:student_details_getx/screens/splash_screen.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
 
@@ -15,7 +17,13 @@ Future<void> main() async {
   // Register the Hive Adapter for your StudentModel
   Hive.registerAdapter(StudentModelAdapter());
   
-  runApp(const MyApp());
+  //! ChangeNotifierProvider
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (ctx) => ThemeProvider()),
+      ChangeNotifierProvider(create: (ctx) => StudentProvider())
+    ],
+    child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +31,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    // Listen for theme changes
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return MaterialApp(
+      // the listened theme updates over here
+      theme: themeProvider.themeData,
       title: 'Student_Details_App using Hive & Provider',
       debugShowCheckedModeBanner: false,
       home: ScreenSplash(),

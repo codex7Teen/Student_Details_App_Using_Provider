@@ -3,8 +3,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:student_details_getx/db/student_db.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:student_details_getx/provider/student_provider.dart';
 import 'package:student_details_getx/screens/add_student.dart';
 
 class StudentListWidget extends StatelessWidget {
@@ -39,11 +39,11 @@ class StudentListWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     IconButton(onPressed: () {
-                      Get.to(ScreenAddStudent(heading: 'Update Student Details', addOrUpdate: 'Update student', name: name, classs: classs, age: age, gender: gender, studentId: id, imagePath: imagePath,));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScreenAddStudent(heading: 'Update Student Details', addOrUpdate: 'Update student', name: name, classs: classs, age: age, gender: gender, studentId: id, imagePath: imagePath,)));
                     }, icon: Icon(Icons.create,color: Colors.black)),
                     IconButton(onPressed: () async {
                       //delete
-                      await StudentDbFunctions.deleteStudent(id);
+                      await context.read<StudentProvider>().deleteStudent(id);
                     }, icon: Icon(Icons.delete,color: Colors.black))
                   ],
                 ),

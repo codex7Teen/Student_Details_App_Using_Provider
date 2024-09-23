@@ -1,8 +1,9 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:student_details_getx/db/student_db.dart';
+import 'package:provider/provider.dart';
+import 'package:student_details_getx/provider/student_provider.dart';
+import 'package:student_details_getx/provider/theme_provider.dart';
 import 'package:student_details_getx/screens/add_student.dart';
 import 'package:student_details_getx/screens/search_screen.dart';
 import 'package:student_details_getx/screens/view_student.dart';
@@ -18,11 +19,10 @@ class ScreenHome extends StatefulWidget {
 bool changeIcon = true;
 
 class _ScreenHomeState extends State<ScreenHome> {
-
   @override
   void initState() {
     super.initState();
-    StudentDbFunctions.getStudentDetails();
+    context.read<StudentProvider>().getStudentDetails();
   }
 
   @override
@@ -32,23 +32,30 @@ class _ScreenHomeState extends State<ScreenHome> {
             backgroundColor: Colors.yellow,
             child: Icon(Icons.add, color: Colors.black),
             onPressed: () {
-              Get.to(ScreenAddStudent(
-                addOrUpdate: 'Add Student',
-                heading: 'Add Student Details',
-              ));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ScreenAddStudent(
+                        addOrUpdate: 'Add Student',
+                        heading: 'Add Student Details',
+                      )));
             }),
         appBar: AppBar(
           iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
+            color: Colors.black,
+          ),
           leading: InkWell(
-            onTap: () {
-              setState(() {
-                changeIcon = !changeIcon;
-              });
-              changeIcon ? Get.changeTheme(ThemeData.light()) : Get.changeTheme(ThemeData.dark());
-            },
-            child: changeIcon ? Icon(Icons.dark_mode_outlined, color: Colors.black,) :  Icon(Icons.light_mode_rounded,color: Colors.black)),
+              onTap: () {
+                // calls toggle-theme function
+                context.read<ThemeProvider>().toggleTheme();
+                setState(() {
+                  changeIcon = !changeIcon;
+                });
+              },
+              child: changeIcon
+                  ? Icon(
+                      Icons.dark_mode_outlined,
+                      color: Colors.black,
+                    )
+                  : Icon(Icons.light_mode_rounded, color: Colors.black)),
           backgroundColor: Colors.yellow[300],
           title: Text(
             'Student Details',
@@ -59,30 +66,33 @@ class _ScreenHomeState extends State<ScreenHome> {
             Padding(
               padding: const EdgeInsets.only(right: 15),
               child: InkWell(
-                onTap: () => Get.to(ScreenSearch()),
-                child: Icon(Icons.search,color: Colors.black)),
+                  onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ScreenSearch())),
+                  child: Icon(Icons.search, color: Colors.black)),
             )
           ],
         ),
         //! body
-        body: studentListNotifier.value.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: ValueListenableBuilder(
-                  valueListenable: studentListNotifier,
-                  builder: (context, studentList, child) {
-                    return ListView.builder(
-                        itemCount: studentList.length,
+        body: Consumer<StudentProvider>(
+          builder: (context, studentDb, child) {
+            return studentDb.studentList.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: ListView.builder(
+                        itemCount: studentDb.studentList.length,
                         itemBuilder: (context, index) {
                           //data
-                          final data = studentList[index];
+                          final data = studentDb.studentList[index];
                           return InkWell(
-                              onTap: () => Get.to(ScreenViewStudent(
-                                imagePath: data.image,
-                                  name: data.name,
-                                  age: data.age,
-                                  classs: data.classs,
-                                  gender: data.gender)),
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ScreenViewStudent(
+                                              imagePath: data.image,
+                                              name: data.name,
+                                              age: data.age,
+                                              classs: data.classs,
+                                              gender: data.gender))),
                               child: StudentListWidget(
                                 name: data.name,
                                 gender: data.gender,
@@ -91,11 +101,11 @@ class _ScreenHomeState extends State<ScreenHome> {
                                 age: data.age,
                                 classs: data.classs,
                               ));
-                        });
-                  },
-                ))
-            : Center(
-                child: Text("NO STUDENT DATA"),
-              ));
+                        }))
+                : Center(
+                    child: Text("NO STUDENT DATA"),
+                  );
+          },
+        ));
   }
 }
