@@ -7,15 +7,9 @@ import 'package:student_details_getx/provider/student_provider.dart';
 import 'package:student_details_getx/screens/view_student.dart';
 import 'package:student_details_getx/widgets/student_list_widget.dart';
 
-class ScreenSearch extends StatefulWidget {
+class ScreenSearch extends StatelessWidget {
   const ScreenSearch({super.key});
 
-  @override
-  State<ScreenSearch> createState() => _ScreenSearchState();
-}
-
-class _ScreenSearchState extends State<ScreenSearch> {
-  
   @override
   Widget build(BuildContext context) {
 

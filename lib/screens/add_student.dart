@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_details_getx/model/student_model.dart';
@@ -125,6 +126,7 @@ class _ScreenAddStudentState extends State<ScreenAddStudent> {
                   ),
                   SizedBox(height: 18),
                   TextFormField(
+                    keyboardType: TextInputType.number,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -143,6 +145,7 @@ class _ScreenAddStudentState extends State<ScreenAddStudent> {
                   ),
                   SizedBox(height: 18),
                   TextFormField(
+                    keyboardType: TextInputType.number,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
