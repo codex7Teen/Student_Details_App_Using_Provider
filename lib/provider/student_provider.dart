@@ -7,9 +7,7 @@ import 'package:student_details_getx/model/student_model.dart';
 class StudentProvider extends ChangeNotifier {
 
   // List to store students
-  List<StudentModel> _studentList = [];
-
-  List<StudentModel> get studentList => _studentList;
+  List<StudentModel> studentList = [];
 
   //! Add Student
   Future<void> addStudentDetails(StudentModel value) async {
@@ -17,7 +15,7 @@ class StudentProvider extends ChangeNotifier {
 
   await studentDb.add(value);
 
-  _studentList.add(value);
+  studentList.add(value);
 
   notifyListeners();
 
@@ -28,7 +26,7 @@ class StudentProvider extends ChangeNotifier {
   Future<void> getStudentDetails() async {
   final studentDb = await Hive.openBox<StudentModel>(StudentModel.boxName);
 
-  _studentList = studentDb.values.toList();
+  studentList = studentDb.values.toList();
 
   notifyListeners();
 

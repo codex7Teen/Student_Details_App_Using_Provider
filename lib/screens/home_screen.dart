@@ -16,8 +16,6 @@ class ScreenHome extends StatefulWidget {
   State<ScreenHome> createState() => _ScreenHomeState();
 }
 
-bool changeIcon = true;
-
 class _ScreenHomeState extends State<ScreenHome> {
   @override
   void initState() {
@@ -46,16 +44,14 @@ class _ScreenHomeState extends State<ScreenHome> {
               onTap: () {
                 // calls toggle-theme function
                 context.read<ThemeProvider>().toggleTheme();
-                setState(() {
-                  changeIcon = !changeIcon;
-                });
               },
-              child: changeIcon
+              // watches for the buttonclick and changes icon
+              child: context.watch<ThemeProvider>().isDarkTheme
                   ? Icon(
-                      Icons.dark_mode_outlined,
+                      Icons.light_mode_rounded,
                       color: Colors.black,
                     )
-                  : Icon(Icons.light_mode_rounded, color: Colors.black)),
+                  : Icon(Icons.dark_mode, color: Colors.black)),
           backgroundColor: Colors.yellow[300],
           title: Text(
             'Student Details',

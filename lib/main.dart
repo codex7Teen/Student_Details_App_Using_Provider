@@ -17,7 +17,7 @@ Future<void> main() async {
   // Register the Hive Adapter for your StudentModel
   Hive.registerAdapter(StudentModelAdapter());
   
-  //! ChangeNotifierProvider
+  // Run the app with multiple providers for theme and student data
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (ctx) => ThemeProvider()),
@@ -31,12 +31,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Listen for theme changes
-    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
-      // the listened theme updates over here
-      theme: themeProvider.themeData,
+      // changes the theme according to themeprovider applythemefunction
+      theme: context.watch<ThemeProvider>().applyThemeData(),
       title: 'Student_Details_App using Hive & Provider',
       debugShowCheckedModeBanner: false,
       home: ScreenSplash(),
