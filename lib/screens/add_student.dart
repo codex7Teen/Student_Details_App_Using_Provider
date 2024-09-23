@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_details_getx/model/student_model.dart';
 import 'package:student_details_getx/provider/student_provider.dart';
-import 'package:student_details_getx/widgets/student_list_widget.dart';
 
 class ScreenAddStudent extends StatefulWidget {
   final String heading;
