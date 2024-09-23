@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_details_getx/provider/student_provider.dart';
-import 'package:student_details_getx/model/student_model.dart';
 import 'package:student_details_getx/screens/view_student.dart';
 import 'package:student_details_getx/widgets/student_list_widget.dart';
 
@@ -16,24 +15,13 @@ class ScreenSearch extends StatefulWidget {
 }
 
 class _ScreenSearchState extends State<ScreenSearch> {
-
-  List<StudentModel> searchResults = [];
-  bool hasSearched = false;
-
-  void filterStudets(String query) {
-    final studentProvider = context.read<StudentProvider>();
-    final results = studentProvider.studentList.where((student) {
-      return student.name.toLowerCase().contains(query.toLowerCase());
-    }).toList();
-
-    setState(() {
-      searchResults = results;
-      hasSearched = true;
-    });
-  }
   
   @override
   Widget build(BuildContext context) {
+
+    // creating a variable for studentprovide
+  final studentProvider = context.watch<StudentProvider>();
+
     return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
@@ -61,17 +49,17 @@ class _ScreenSearchState extends State<ScreenSearch> {
                 backgroundColor: Colors.white,
                 padding: EdgeInsets.all(10),
                 onChanged: (query) {
-                  filterStudets(query);
+                  studentProvider.filterStudents(query);
                 },
               ),
             ),
 
             Expanded(
-              child: hasSearched ? searchResults.isNotEmpty ? ListView.builder(
-                          itemCount: searchResults.length,
+              child: studentProvider.hasSearched ? studentProvider.filteredStudentList.isNotEmpty ? ListView.builder(
+                          itemCount: studentProvider.filteredStudentList.length,
                           itemBuilder: (context, index) {
                             //data
-                            final data = searchResults[index];
+                            final data = studentProvider.filteredStudentList[index];
                             return InkWell(
                                 onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ScreenViewStudent(
                                   imagePath: data.image,
