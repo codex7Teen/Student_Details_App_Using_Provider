@@ -53,9 +53,12 @@ class _ScreenHomeState extends State<ScreenHome> {
                     )
                   : Icon(Icons.dark_mode, color: Colors.black)),
           backgroundColor: Colors.yellow[300],
-          title: Text(
-            'Student Details',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          title: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              'Student Details Using Provider',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
           ),
           centerTitle: true,
           actions: [

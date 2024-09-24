@@ -13,7 +13,7 @@ class ScreenSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // creating a variable for studentprovide
+    // creating a variable for studentprovider
   final studentProvider = context.watch<StudentProvider>();
 
     return Scaffold(
